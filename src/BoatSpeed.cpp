@@ -1,15 +1,22 @@
-// Boat Speed: Mod Menu slider (1-100) that multiplies boat speed.
-// Slider value 1 = vanilla (x1), 100 = x100.
+// Boat Speed: Mod Menu slider (1-100) that multiplies how fast boats accelerate.
+// Slider 1 = vanilla, 100 = boats paddle 100x harder (top speed scales the same).
 //
-// STATUS: the menu + hook plumbing is complete. kBoatSpeedSignature is EMPTY
-// until you run tools/find_signatures.py against YOUR libminecraftpe.so and
-// confirm which function returns the boat speed. Empty = mod loads but does
-// not hook anything (safe, no crash).
+// How it works (Bedrock's boats are ECS-driven): BoatMoveControlSystem::boatControl<bool>
+// runs once per boat per tick. Its arguments are
+//   x0 StrictEntityContext&   x1 BoatMovementComponent&   x2 BoatPaddleComponent&
+//   x3 StateVectorComponent&  x4 ActorRotationComponent&  x5 view/optional
+// It computes   posDelta = (posDelta + paddleAccel) * friction   where
+//   paddleAccel ~ 0.0138 * BoatPaddleComponent[+0x10]  (paddle force)
+// so scaling the paddle force by N scales acceleration, and top speed, by N
+// without destabilising the friction term. [+0x0C] is the paddle animation phase,
+// which that function also advances by the force; we undo the extra advance.
+//
+// Offsets/signatures below were taken from libminecraftpe.so (arm64) of the game
+// version you uploaded. After a Minecraft update the signatures may need redoing
+// with tools/find_boat_vtable.py + the notes in README.md.
 #include <algorithm>
 #include <atomic>
 #include <charconv>
-#include <fstream>
-#include <sstream>
 #include <string>
 #include <string_view>
 
@@ -20,22 +27,54 @@
 
 namespace {
 
-// Byte pattern, e.g. "FD 7B ?? A9 ..." ('?' = wildcard). Fill from the tool.
-constexpr const char *kBoatSpeedSignature = "";
+// boatControl<false> and boatControl<true>: unique byte patterns ('??' = wildcard).
+constexpr const char *kSigControlA =
+    "28 04 40 B9 1F 61 00 71 ?? ?? ?? ?? EC 0F 1B FC EB 2B 01 6D E9 23 02 6D "
+    "FD 7B 03 A9 F4 4F 04 A9 FD C3 00 91 A9 00 40 F9";
+constexpr const char *kSigControlB =
+    "FF 83 01 D1 EC 0B 00 FD EB AB 01 6D E9 A3 02 6D FD FB 03 A9 F5 27 00 F9 "
+    "F4 4F 05 A9 FD E3 00 91 54 D0 3B D5 88 16 40 F9";
 
 constexpr const char *kModuleId = "boat_speed.module";
 constexpr const char *kSpeedKey = "boatSpeed";
 
+constexpr std::size_t kPaddlePhaseOffset = 0x0C;
+constexpr std::size_t kPaddleForceOffset = 0x10;
+
 std::atomic<int> gSpeed{1};
 
-// ASSUMPTION: the target is a float-returning speed getter taking `this`.
-// Confirm in a disassembler; change this type/detour if the real function differs.
-using SpeedFn = float (*)(void *);
-SpeedFn gOriginal = nullptr;
+using ControlFn = void (*)(void *, void *, void *, void *, void *, void *, void *, void *);
+ControlFn gOrigA = nullptr;
+ControlFn gOrigB = nullptr;
 
-float boatSpeedDetour(void *self) {
-  const float base = gOriginal ? gOriginal(self) : 0.0f;
-  return base * static_cast<float>(gSpeed.load(std::memory_order_relaxed));
+inline void callScaled(ControlFn orig, void *a0, void *a1, void *a2, void *a3,
+                       void *a4, void *a5, void *a6, void *a7) {
+  const int mult = gSpeed.load(std::memory_order_relaxed);
+  if (mult <= 1 || !a2) {
+    orig(a0, a1, a2, a3, a4, a5, a6, a7);
+    return;
+  }
+  auto *base = static_cast<char *>(a2);
+  auto *force = reinterpret_cast<float *>(base + kPaddleForceOffset);
+  auto *phase = reinterpret_cast<float *>(base + kPaddlePhaseOffset);
+  const float oldForce = *force;
+  const float oldPhase = *phase;
+  const float m = static_cast<float>(mult);
+
+  *force = oldForce * m;
+  orig(a0, a1, a2, a3, a4, a5, a6, a7);
+  *force = oldForce;
+
+  // Keep the paddle animation at its normal speed (skip if it wrapped around).
+  const float newPhase = *phase;
+  if (newPhase >= oldPhase) *phase = oldPhase + (newPhase - oldPhase) / m;
+}
+
+void detourA(void *a0, void *a1, void *a2, void *a3, void *a4, void *a5, void *a6, void *a7) {
+  callScaled(gOrigA, a0, a1, a2, a3, a4, a5, a6, a7);
+}
+void detourB(void *a0, void *a1, void *a2, void *a3, void *a4, void *a5, void *a6, void *a7) {
+  callScaled(gOrigB, a0, a1, a2, a3, a4, a5, a6, a7);
 }
 
 class BoatSpeedMod {
@@ -64,42 +103,19 @@ public:
       return false;
     }
 
-    // Signature: compiled-in value wins; otherwise read <configDir>/boat_signature.txt
-    // so you can try candidates on the phone without recompiling.
-    std::string sig = kBoatSpeedSignature;
-    if (sig.empty()) {
-      std::ifstream in(mSelf.getConfigDir() / "boat_signature.txt");
-      std::stringstream ss;
-      if (in) ss << in.rdbuf();
-      sig = ss.str();
-      while (!sig.empty() && (sig.back() == '\n' || sig.back() == '\r' || sig.back() == ' '))
-        sig.pop_back();
-    }
-    if (sig.empty()) {
-      mSelf.getLogger().warn("No boat signature set; slider has no effect yet");
-      return true;
-    }
-    mTarget = reinterpret_cast<void *>(
-        pl::memory::resolveSignature(sig, "libminecraftpe.so"));
-    if (!mTarget) {
-      mSelf.getLogger().warn("Boat signature not found in this game version");
-      return true;
-    }
-    if (pl::memory::hook(mTarget, reinterpret_cast<void *>(&boatSpeedDetour),
-                         reinterpret_cast<void **>(&gOriginal)) != 0) {
-      mSelf.getLogger().error("Hook install failed");
-      mTarget = nullptr;
-    } else {
-      mSelf.getLogger().info("Boat speed hook installed");
-    }
+    mTargetA = install(kSigControlA, reinterpret_cast<void *>(&detourA),
+                       reinterpret_cast<void **>(&gOrigA), "A");
+    mTargetB = install(kSigControlB, reinterpret_cast<void *>(&detourB),
+                       reinterpret_cast<void **>(&gOrigB), "B");
+    if (!mTargetA && !mTargetB)
+      mSelf.getLogger().warn("No boat hook installed (game version changed?)");
     return true;
   }
 
   bool disable() {
-    if (mTarget) {
-      pl::memory::unhook(mTarget, reinterpret_cast<void *>(&boatSpeedDetour));
-      mTarget = nullptr;
-    }
+    if (mTargetA) pl::memory::unhook(mTargetA, reinterpret_cast<void *>(&detourA));
+    if (mTargetB) pl::memory::unhook(mTargetB, reinterpret_cast<void *>(&detourB));
+    mTargetA = mTargetB = nullptr;
     pl::modmenu::unregisterModule(kModuleId);
     return true;
   }
@@ -107,6 +123,21 @@ public:
   bool unload() { return true; }
 
 private:
+  void *install(const char *sig, void *detour, void **orig, const char *tag) {
+    void *target = reinterpret_cast<void *>(
+        pl::memory::resolveSignature(sig, "libminecraftpe.so"));
+    if (!target) {
+      mSelf.getLogger().warn("Boat signature {} not found", tag);
+      return nullptr;
+    }
+    if (pl::memory::hook(target, detour, orig) != 0) {
+      mSelf.getLogger().error("Hook {} failed", tag);
+      return nullptr;
+    }
+    mSelf.getLogger().info("Boat hook {} installed", tag);
+    return target;
+  }
+
   static void onConfigChanged(std::string_view moduleId, std::string_view key,
                               std::string_view value) {
     if (moduleId != kModuleId || key != kSpeedKey) return;
@@ -117,7 +148,8 @@ private:
   }
 
   ll::mod::NativeMod &mSelf;
-  void *mTarget = nullptr;
+  void *mTargetA = nullptr;
+  void *mTargetB = nullptr;
 };
 
 } // namespace

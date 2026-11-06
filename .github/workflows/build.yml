@@ -11,28 +11,33 @@ permissions:
   contents: write
 jobs:
   build:
-    runs-on: ubuntu-latest   # has CMake + Android NDK preinstalled
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Fetch preloader SDK
         run: test -f third_party/preloader-android/include/pl/Mod.hpp || git clone --depth 1 https://github.com/LiteLDev/preloader-android third_party/preloader-android
+      - name: Install NDK 28.2 (same version LeviLaunchroid itself uses)
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;28.2.13676358" > /dev/null
+          echo "NDK=$ANDROID_HOME/ndk/28.2.13676358" >> "$GITHUB_ENV"
       - name: Configure + build (arm64-v8a)
         run: |
           set -o pipefail
           {
-            echo "NDK=$ANDROID_NDK_LATEST_HOME"; cmake --version | head -1
+            echo "NDK=$NDK"; cmake --version | head -1
             cmake -S . -B build \
-              -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
+              -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
               -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-24 -DCMAKE_BUILD_TYPE=Release &&
             cmake --build build --config Release -j
           } 2>&1 | tee /tmp/build.log
-      - name: Publish build log on failure
-        if: failure()
+      - name: Inspect imports (must not need symbols the game's libc++ lacks)
         run: |
-          git config user.name ci; git config user.email ci@users.noreply.github.com
-          git checkout --orphan ci-log; git rm -rf --quiet .
-          tail -n 300 /tmp/build.log > build.log
-          git add build.log; git commit -q -m "build log"; git push -f origin ci-log
+          BIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+          SO=$(find build -name libboat_speed_mod.so | head -1)
+          { echo "== NEEDED"; $BIN/llvm-readelf -d "$SO" | grep NEEDED
+            echo "== undefined libc++ symbols"; $BIN/llvm-nm -D --undefined-only "$SO" | grep -E "__ndk1" | head -80
+          } | tee /tmp/imports.txt
+          ! grep -q "__hash_memory" /tmp/imports.txt
       - name: Package .levipack (renamed ZIP)
         run: |
           mkdir -p dist
@@ -41,11 +46,16 @@ jobs:
           mv dist/boat-speed.zip dist/boat-speed.levipack
       - uses: actions/upload-artifact@v4
         with: { name: boat-speed-levipack, path: dist/boat-speed.levipack }
+      - name: Publish build log
+        if: always()
+        run: |
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git checkout --orphan ci-log; git rm -rf --quiet .
+          tail -n 200 /tmp/build.log > build.log 2>/dev/null || true
+          cp /tmp/imports.txt imports.txt 2>/dev/null || true
+          git add -A; git commit -q -m "ci log" || true; git push -f origin ci-log
       - name: Scan libminecraftpe.so for signatures
         if: ${{ inputs.so_mediafire_url != '' }}
         run: |
           pip install lief numpy
           python tools/find_signatures.py --mediafire "${{ inputs.so_mediafire_url }}" -s boat -s Boat -o signature_report.txt
-      - uses: actions/upload-artifact@v4
-        if: ${{ inputs.so_mediafire_url != '' }}
-        with: { name: signature-report, path: signature_report.txt }

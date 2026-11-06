@@ -16,6 +16,9 @@ if(NOT EXISTS "${PRELOADER_ANDROID_ROOT}/include/pl/Config.hpp")
         "Missing: ${PRELOADER_ANDROID_ROOT}/include/pl/Config.hpp")
 endif()
 
+# fmt 11.2.0 uses malloc/free without <cstdlib>; newer NDK libc++ no longer leaks it in.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -include cstdlib")
+
 include(FetchContent)
 
 set(LL_BOAT_MOD_DEPS)

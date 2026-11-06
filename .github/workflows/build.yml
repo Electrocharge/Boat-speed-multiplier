@@ -1,0 +1,38 @@
+name: Build boat-speed .levipack
+on:
+  workflow_dispatch:
+    inputs:
+      so_mediafire_url:
+        description: "Optional: MediaFire page URL of libminecraftpe.so to scan for signatures"
+        required: false
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest   # has CMake + Android NDK preinstalled
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch preloader SDK
+        run: test -f third_party/preloader-android/include/pl/Mod.hpp || git clone --depth 1 https://github.com/LiteLDev/preloader-android third_party/preloader-android
+      - name: Configure + build (arm64-v8a)
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-24 -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release -j
+      - name: Package .levipack (renamed ZIP)
+        run: |
+          mkdir -p dist
+          SO=$(find build -name libboat_speed_mod.so | head -1)
+          zip -j dist/boat-speed.zip manifest.json "$SO"
+          mv dist/boat-speed.zip dist/boat-speed.levipack
+      - uses: actions/upload-artifact@v4
+        with: { name: boat-speed-levipack, path: dist/boat-speed.levipack }
+      - name: Scan libminecraftpe.so for signatures
+        if: ${{ inputs.so_mediafire_url != '' }}
+        run: |
+          pip install lief numpy
+          python tools/find_signatures.py --mediafire "${{ inputs.so_mediafire_url }}" -s boat -s Boat -o signature_report.txt
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.so_mediafire_url != '' }}
+        with: { name: signature-report, path: signature_report.txt }

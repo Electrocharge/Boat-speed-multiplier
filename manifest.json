@@ -1,0 +1,8 @@
+{
+  "type": "preload-native",
+  "name": "Boat Speed",
+  "author": "you",
+  "version": "0.1.0",
+  "entry": "libboat_speed_mod.so",
+  "minecraft_versions": []
+}

@@ -7,6 +7,8 @@ on:
         required: false
   push:
     branches: [main]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest   # has CMake + Android NDK preinstalled
@@ -16,10 +18,21 @@ jobs:
         run: test -f third_party/preloader-android/include/pl/Mod.hpp || git clone --depth 1 https://github.com/LiteLDev/preloader-android third_party/preloader-android
       - name: Configure + build (arm64-v8a)
         run: |
-          cmake -S . -B build \
-            -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
-            -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-24 -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --config Release -j
+          set -o pipefail
+          {
+            echo "NDK=$ANDROID_NDK_LATEST_HOME"; cmake --version | head -1
+            cmake -S . -B build \
+              -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
+              -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-24 -DCMAKE_BUILD_TYPE=Release &&
+            cmake --build build --config Release -j
+          } 2>&1 | tee /tmp/build.log
+      - name: Publish build log on failure
+        if: failure()
+        run: |
+          git config user.name ci; git config user.email ci@users.noreply.github.com
+          git checkout --orphan ci-log; git rm -rf --quiet .
+          tail -n 300 /tmp/build.log > build.log
+          git add build.log; git commit -q -m "build log"; git push -f origin ci-log
       - name: Package .levipack (renamed ZIP)
         run: |
           mkdir -p dist

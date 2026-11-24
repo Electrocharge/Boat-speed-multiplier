@@ -1,0 +1,89 @@
+NDK=/usr/local/lib/android/sdk/ndk/28.2.13676358
+cmake version 4.5.0
+-- The CXX compiler identification is Clang 19.0.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/local/lib/android/sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Using the multi-header code from /home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/nlohmann_json-src/include/
+-- {fmt} version: 11.2.0
+-- Build type: Release
+-- Performing Test HAS_NULLPTR_WARNING
+-- Performing Test HAS_NULLPTR_WARNING - Success
+-- Using plutovg submodule.
+-- The C compiler identification is Clang 19.0.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/local/lib/android/sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Looking for threads.h
+-- Looking for threads.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Check if compiler accepts -pthread
+-- Check if compiler accepts -pthread - yes
+-- Found Threads: TRUE
+-- Configuring done (23.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build
+[ 26%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-ft-math.c.o
+[ 10%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-matrix.c.o
+[  6%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-canvas.c.o
+[ 18%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-rasterize.c.o
+[ 14%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-paint.c.o
+[ 26%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-ft-stroker.c.o
+[ 20%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-ft-raster.c.o
+[ 16%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-path.c.o
+[  8%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-font.c.o
+[ 12%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-blend.c.o
+[  4%] Building CXX object _deps/fmt-build/CMakeFiles/fmt.dir/src/os.cc.o
+[ 22%] Building C object _deps/lunasvg-build/plutovg/CMakeFiles/plutovg.dir/source/plutovg-surface.c.o
+[ 28%] Linking C static library libplutovg.a
+[ 28%] Built target plutovg
+[  2%] Building CXX object _deps/fmt-build/CMakeFiles/fmt.dir/src/format.cc.o
+[ 50%] Linking CXX static library libfmt.a
+[ 50%] Built target fmt
+[ 36%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/graphics.cpp.o
+[ 44%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svgrenderstate.cpp.o
+[ 46%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svgproperty.cpp.o
+[ 38%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svgpaintelement.cpp.o
+[ 36%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svggeometryelement.cpp.o
+[ 40%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svglayoutstate.cpp.o
+[ 48%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svgtextelement.cpp.o
+[ 30%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/lunasvg.cpp.o
+[ 34%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svgelement.cpp.o
+[ 42%] Building CXX object _deps/lunasvg-build/CMakeFiles/lunasvg.dir/source/svgparser.cpp.o
+[ 52%] Linking CXX static library liblunasvg.a
+[ 52%] Built target lunasvg
+[ 72%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/legacy/LegacyHook.cpp.o
+[ 80%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/memory/Vtable.cpp.o
+[ 68%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/legacy/LegacySignature.cpp.o
+[ 66%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/legacy/LegacyInput.cpp.o
+[ 90%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/JavaRuntime.cpp.o
+[ 76%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/legacy/LegacyPatch.cpp.o
+[ 94%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/InputJni.cpp.o
+[ 70%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/memory/Hook.cpp.o
+[ 74%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/memory/Patch.cpp.o
+[ 58%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/Mod.cpp.o
+[ 58%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/internal/LoadedModRegistry.cpp.o
+[ 62%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/internal/ModManager.cpp.o
+[ 80%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/GameHooks.cpp.o
+[ 54%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/PreLoader.cpp.o
+[ 64%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/internal/NativeModLifecycle.cpp.o
+[ 88%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/InputBridge.cpp.o
+[ 84%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/memory/Signature.cpp.o
+[ 82%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/GameHookRules.cpp.o
+[ 60%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/internal/ModManifest.cpp.o
+[ 86%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/ExternalModBridgeJni.cpp.o
+[ 92%] Building CXX object _preloader_android/CMakeFiles/preloader.dir/src/pl/runtime/ModMenuBridge.cpp.o
+[ 96%] Linking CXX shared library libpreloader.so
+[ 96%] Built target preloader
+[ 98%] Building CXX object CMakeFiles/boat_speed_mod.dir/src/BoatSpeed.cpp.o
+[100%] Linking CXX shared library out/arm64-v8a/libboat_speed_mod.so
+[100%] Built target boat_speed_mod

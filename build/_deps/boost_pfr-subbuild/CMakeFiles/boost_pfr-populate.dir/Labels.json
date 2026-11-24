@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/CMakeFiles/boost_pfr-populate"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/CMakeFiles/boost_pfr-populate.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/CMakeFiles/boost_pfr-populate-complete.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-build.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-configure.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-download.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-install.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-patch.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-test.rule"
+		},
+		{
+			"file" : "/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-subbuild/boost_pfr-populate-prefix/src/boost_pfr-populate-stamp/boost_pfr-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"boost_pfr-populate"
+		],
+		"name" : "boost_pfr-populate"
+	}
+}

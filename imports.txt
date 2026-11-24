@@ -1,0 +1,29 @@
+== NEEDED
+  0x0000000000000001 (NEEDED)       Shared library: [liblog.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libpreloader.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libm.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libdl.so]
+  0x0000000000000001 (NEEDED)       Shared library: [libc.so]
+== undefined libc++ symbols
+                 U _ZN2pl6memory16resolveSignatureENSt6__ndk117basic_string_viewIcNS1_11char_traitsIcEEEES5_
+                 U _ZN2pl7modmenu16unregisterModuleENSt6__ndk117basic_string_viewIcNS1_11char_traitsIcEEEE
+                 U _ZNKSt6__ndk16locale9has_facetERNS0_2idE
+                 U _ZNKSt6__ndk16locale9use_facetERNS0_2idE
+                 U _ZNSt6__ndk112__next_primeEm
+                 U _ZNSt6__ndk112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6assignEmc
+                 U _ZNSt6__ndk112system_errorC1ENS_10error_codeEPKc
+                 U _ZNSt6__ndk112system_errorC1ENS_10error_codeERKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE
+                 U _ZNSt6__ndk112system_errorD1Ev
+                 U _ZNSt6__ndk116generic_categoryEv
+                 U _ZNSt6__ndk15mutex4lockEv
+                 U _ZNSt6__ndk15mutex6unlockEv
+                 U _ZNSt6__ndk15mutexD1Ev
+                 U _ZNSt6__ndk16locale5facet16__on_zero_sharedEv
+                 U _ZNSt6__ndk16locale5facetD2Ev
+                 U _ZNSt6__ndk16localeC1ERKS0_
+                 U _ZNSt6__ndk16localeC1Ev
+                 U _ZNSt6__ndk16localeD1Ev
+                 U _ZNSt6__ndk18numpunctIcE2idE
+                 U _ZNSt6__ndk18numpunctIwE2idE
+                 U _ZTINSt6__ndk112system_errorE
+                 U _ZTINSt6__ndk16locale5facetE

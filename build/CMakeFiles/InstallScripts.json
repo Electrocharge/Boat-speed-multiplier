@@ -1,0 +1,14 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/nlohmann_json-build/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/boost_pfr-build/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/magic_enum-build/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/fmt-build/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_preloader_android/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/lunasvg-build/cmake_install.cmake",
+		"/home/runner/work/Boat-speed-multiplier/Boat-speed-multiplier/build/_deps/lunasvg-build/plutovg/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

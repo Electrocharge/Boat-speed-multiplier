@@ -1,0 +1,11 @@
+# Hashes of file build rules.
+8481346882505cd8823ed8246bdfdc3e CMakeFiles/lunasvg-populate
+800e05ba433a587d826437e9a5ecb1a4 CMakeFiles/lunasvg-populate-complete
+6114d9dd5cc1e9da16f6827593ab25bf lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-build
+12b8e029edf5af5fecdb8ec7901876d2 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-configure
+0540929563f55fd221c1ffe45676e0e1 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-download
+8943ab24a37b7849c5154fe94e1191e7 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-install
+6c6a3b8ad33bce0dd38475ddcf572aa6 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-mkdir
+f012c63c62a2f26b9cf38640c2ade171 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-patch
+e9ccb7674fe8dee7c2316b403cb72c55 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-test
+2ef1e90dae8047638b194d46f7d7a924 lunasvg-populate-prefix/src/lunasvg-populate-stamp/lunasvg-populate-update
